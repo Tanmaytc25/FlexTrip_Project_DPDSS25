@@ -2,7 +2,7 @@
 <html lang="en">
     <head> 
         <meta charset="UTF-8">
-        <meta name="viewpoint" content="width=device-width, intial-scale=1.0">
+        <meta name="viewport" content="width=device-width, intial-scale=1.0">
         <title> FlexTrip</title>
         <style>
 
@@ -41,9 +41,28 @@
                 font-size: 18px;
                 color: #333;
             }
+            #launchPopup {
+    transition: all 0.5s ease;
+}
         </style>
     </head>
     <body>
+        <div id="launchPopup" style="
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background-color: #ffccbc;
+    color: #4e342e;
+    padding: 20px;
+    font-size: 18px;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+    z-index: 1000;
+">
+    🚀 <strong>Launching Soon...</strong> Thank you for your patience and support!<br>
+    <small style="font-size: 14px; color: #6d4c41;">Created with ❤️ by Tanmay, Dico & Faith</small>
+</div>
         <div class="container">
             <h1> Plan Your Next Destination</h1>
             <p> Click The Button To Get To Know A Random Travel Destination For You! </p>
@@ -52,7 +71,10 @@
         </div>
 
         <script>
-            document.getElementById("travelButton").addEventListener("click", () => {
+
+
+            document.getElementById("travelButton").addEventListener("click", async () => {
+
                const destinations = [
                 "Paris, France",
                 "Berlin, Germany",
@@ -67,10 +89,45 @@
             const randomIndex = Math.floor(Math.random() * destinations.length);
             const destination = destinations[randomIndex];
 
-            const message = `How about visiting: ${destination}?`;
-            document.getElementById("statusMessage").textContent = message;
+            const statusEl = document.getElementById("statusMessage");
+            statusEl.innerHTML = `How about visiting: <strong>${destination}</strong>?<br><br>`;
+            //Sending destination to Flask for the backend 
+            try {
+                const response = await fetch("http://localhost:5000/save-destination", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
 
-            });
+                    },
+                    body: JSON.stringify({destination}),
+                });
+
+                if (response.ok) {
+                    statusEl.textContent += "✅ Destination Saved!!";
+                } else {
+                    statusEl.textContent += "⚠️ Unfortunately cannot save a destination at this time. We apologize for any inconvinience. ";
+                }
+                } catch (error) {
+                    console.error("Error:", error);
+                    statusEl.textContent += "❌ Unable to connect to the server at this time. We apologize for any inconvinience.";
+
+                }
+                });
+
         </script>
+
+<div style="margin-top: 50px; color: #555;">
+    <h3>Upcoming Features</h3>
+    <ul style="list-style: none; padding: 0;">
+        <li>✔️ Budget-based travel suggestions</li>
+        <li>✔️ Emergency contacts & safety info</li>
+        <li>✔️ Accommodation & restaurant recommendations</li>
+        <li>✔️ Custom itineraries by community</li>
+    </ul>
+</div>
+<footer style="margin-top: 80px; font-size: 14px; color: #666;">
+    © 2025 FlexTrip • Built with 💡 for smart, budget-friendly travel<br>
+    Contact us at <a href="mailto:HelpAt@FlexTrip.com">HelpAt@FlexTrip.com</a>
+</footer>
     </body>
 </html>
