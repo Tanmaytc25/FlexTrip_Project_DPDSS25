@@ -1,12 +1,16 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
+import os
 
-
-app = Flask(__name__)
+app = Flask(__name__, static_folder="static")
 CORS(app)
 
 saved_destinations = []
 
+# Route to serve the HTML frontend
+@app.route("/")
+def serve_index():
+    return send_from_directory(app.static_folder, "index.html")
 
 @app.route('/save-destination', methods=['POST'])
 def save_destination():
@@ -20,6 +24,5 @@ def save_destination():
     else:
         return jsonify({"error": "No destination provided"}), 400
 
-
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=5000, debug=True)
