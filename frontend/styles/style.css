@@ -1,0 +1,144 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #f4f4f4;
+  color: #333;
+}
+
+.top-nav {
+  background-color: #1a237e;
+  color: #fff;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.top-nav .logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.top-nav .nav-links {
+  list-style: none;
+  display: flex;
+  gap: 1.5rem;
+}
+
+.top-nav .nav-links li {
+  display: inline;
+}
+
+.top-nav .nav-links a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.dashboard-container {
+  display: flex;
+  justify-content: space-between;
+  padding: 2rem;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+section, aside {
+  background-color: #fff;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.trip-summary,
+.recent-trips {
+  flex: 1 1 300px;
+}
+
+.user-info {
+  flex: 1 1 200px;
+}
+
+form {
+  margin: 2rem;
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 8px;
+  max-width: 600px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+form label {
+  display: block;
+  margin-bottom: 1rem;
+}
+
+form input,
+form select,
+form button {
+  width: 100%;
+  padding: 0.5rem;
+  margin-top: 0.25rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+button {
+  background-color: #1a237e;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 1rem;
+}
+
+button:hover {
+  background-color: #3949ab;
+}
+
+#calendar {
+  margin: 2rem;
+  background: #fff;
+  padding: 1rem;
+  border-radius: 8px;
+  max-width: 90%;
+  margin-left: auto;
+  margin-right: auto;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+#calendar h3 {
+  margin-bottom: 1rem;
+}
+
+.draggable-poi {
+  padding: 10px;
+  margin: 10px 0;
+  background-color: #e3f2fd;
+  border-left: 4px solid #1976d2;
+  cursor: grab;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+.draggable-poi:hover {
+  background-color: #bbdefb;
+}
+
+#calendar-container {
+  margin: 2rem;
+}
+
+.fc .fc-toolbar-title {
+  font-size: 1.25rem;
+}
+
+@media screen and (max-width: 768px) {
+  .dashboard-container {
+    flex-direction: column;
+  }
+
+  form, #calendar {
+    margin: 1rem;
+  }
+}

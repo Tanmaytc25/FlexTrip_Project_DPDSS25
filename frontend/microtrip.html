@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Plan Micro Trip</title>
+  <link rel="stylesheet" href="styles/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+</head>
+<body>
+  <div class="microtrip-layout">
+    <!-- Left: Microtrip Form -->
+    <section class="form-section">
+      <h2>Plan a Micro Trip</h2>
+      <form id="microTripForm">
+        <label for="location">Select Region</label>
+        <select id="location" required>
+          <option value="">-- Choose a region --</option>
+        </select>
+
+        <label for="interests">Select Interests</label>
+        <select id="interests" multiple required></select>
+
+        <label for="budget">Budget (€)</label>
+        <input type="number" id="budget" min="0" required />
+
+        <button type="submit">Generate</button>
+      </form>
+    </section>
+
+    <!-- Center: POI Suggestions -->
+    <section class="results-section">
+      <h2>Suggested POIs</h2>
+      <ul id="microTripResult" class="card-container"></ul>
+      <div id="map" style="height: 250px; margin-top: 1rem;"></div>
+    </section>
+
+    <!-- Right: Google Calendar Drag/Drop Area -->
+    <section class="calendar-section">
+      <h2>Schedule</h2>
+      <div id="calendar" class="calendar-placeholder">
+        <p>🗓️ Drag POIs here to schedule your trip.</p>
+        <ul id="calendarDropZone" class="drop-target"></ul>
+      </div>
+
+      <div class="calendar-actions">
+        <button id="saveTripBtn" style="display: none;">💾 Save Trip</button>
+        <button id="syncCalendarBtn" style="display: none;">🔄 Sync to Google Calendar</button>
+      </div>
+    </section>
+  </div>
+
+  <!-- Only modified the JS part near the fetch logic -->
+<script>
+  const locations = [
+    "Munich", "Salzburg", "Nuremberg", "Augsburg", "Regensburg",
+    "Würzburg", "Bamberg", "Ingolstadt", "Passau", "Landshut",
+    "Bayreuth", "Deggendorf", "Eggenfelden", "Pfarrkirchen"
+  ];
+
+  const allInterests = ["food", "history", "culture", "nature", "nightlife", "arts"];
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const locationSelect = document.getElementById("location");
+    const interestsSelect = document.getElementById("interests");
+    const budgetInput = document.getElementById("budget");
+
+    locations.forEach(city => {
+      const option = document.createElement("option");
+      option.value = city;
+      option.textContent = city;
+      locationSelect.appendChild(option);
+    });
+
+    allInterests.forEach(interest => {
+      const option = document.createElement("option");
+      option.value = interest;
+      option.textContent = interest.charAt(0).toUpperCase() + interest.slice(1);
+      interestsSelect.appendChild(option);
+    });
+
+    const form = document.getElementById("microTripForm");
+    form.addEventListener("submit", async e => {
+      e.preventDefault();
+
+      const location = locationSelect.value;
+      const interests = Array.from(interestsSelect.selectedOptions).map(opt => opt.value);
+      const budget = parseFloat(budgetInput.value);
+
+      const payload = { current_location: location, interests, budget };
+      console.log("Submitting microtrip request with:", payload);
+
+      try {
+        const response = await fetch('http://localhost:5000/api/microtrip/generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) {
+          const errorDetails = await response.text();
+          throw new Error(`Server responded with status ${response.status}: ${errorDetails}`);
+        }
+
+        const result = await response.json();
+        const resultContainer = document.getElementById("microTripResult");
+        resultContainer.innerHTML = '';
+
+        if (result.recommended && result.recommended.length > 0) {
+          result.recommended.forEach((poi) => {
+            const li = document.createElement("li");
+            li.className = "poi-card";
+            li.setAttribute("data-duration", poi.duration_minutes);
+            li.innerHTML = `
+              <strong>${poi.name}</strong><br/>
+              <small>${poi.interest}</small><br/>
+              <span>${poi.duration_minutes} min, ${poi.opening_time}–${poi.closing_time}</span>
+            `;
+            resultContainer.appendChild(li);
+          });
+
+          Sortable.create(resultContainer, { group: "shared", animation: 150 });
+          Sortable.create(document.getElementById("calendarDropZone"), { group: "shared", animation: 150 });
+
+          document.getElementById("saveTripBtn").style.display = "inline-block";
+          document.getElementById("syncCalendarBtn").style.display = "inline-block";
+        } else {
+          resultContainer.innerHTML = `<p>No suggestions found. Try different inputs.</p>`;
+        }
+      } catch (error) {
+        console.error("Error generating microtrip:", error);
+        alert("Microtrip generation failed. Check console for details.");
+      }
+    });
+  });
+</script>
+</body>
+</html>

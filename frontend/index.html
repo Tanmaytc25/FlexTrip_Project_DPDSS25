@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>FlexTrip – Microtrip Planner</title>
+  <link rel="stylesheet" href="styles/style.css">
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
+</head>
+<body>
+
+  <h1>📍 FlexTrip Microtrip Generator</h1>
+
+  <div class="form-section">
+    <form id="microtripForm">
+  <label for="location">Current Location:</label>
+  <select name="location" id="location">
+    <option value="Munich">Munich</option>
+    <option value="Nuremberg">Nuremberg</option>
+    <option value="Regensburg">Regensburg</option>
+    <option value="Salzburg">Salzburg</option>
+    <option value="Augsburg">Augsburg</option>
+  </select>
+
+  <label for="interests">Interests:</label>
+  <select name="interests" id="interests" multiple>
+    <option value="history">History</option>
+    <option value="architecture">Architecture</option>
+    <option value="nature">Nature</option>
+    <option value="relaxation">Relaxation</option>
+    <option value="science">Science</option>
+    <option value="technology">Technology</option>
+    <option value="cars">Cars</option>
+    <option value="food">Food</option>
+    <option value="culture">Culture</option>
+    <option value="education">Education</option>
+  </select>
+
+  <label for="budget">Budget (optional):</label>
+  <input type="number" name="budget" id="budget" />
+
+  <button type="submit">Generate Microtrip</button>
+</form>
+   </div>
+
+  <div id="poiOutput">
+    <h2>🧭 Suggested POIs (Drag into Calendar)</h2>
+    <div id="poiList" class="poi-list"></div>
+  </div>
+
+  <div id="calendar"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+  <script src="scripts/script.js"></script>
+
+</body>
+</html>

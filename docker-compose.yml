@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+    container_name: flextrip-frontend
+    ports:
+      - "3000:80"
+    networks:
+      - flextrip-net
+
+  backend:
+    build:
+      context: ./backend
+    container_name: flextrip-backend
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./backend:/app
+      - ./credentials:/app/credentials
+    depends_on:
+      - db
+    networks:
+      - flextrip-net
+    env_file:
+      - .env  # ✅ inject env variables into backend container
+
+  db:
+    image: postgres:15
+    container_name: flextrip-db
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: flextrip
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - flextrip-net
+
+volumes:
+  db_data:
+
+networks:
+  flextrip-net:
